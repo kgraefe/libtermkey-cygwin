@@ -9,6 +9,7 @@ HOMEPAGE="http://www.leonerd.org.uk/code/${NAME}/"
 SRC_URI="http://www.leonerd.org.uk/code/${NAME}/${NAME}-${VERSION}.tar.gz"
 
 DEPEND="pkgconfig(unibilium)"
+BUILD_REQUIRES="pkg-config"
 
 LDFLAGS="-no-undefined"
 
