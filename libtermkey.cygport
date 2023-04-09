@@ -8,8 +8,7 @@ DESCRIPTION="This library allows easy processing of keyboard entry from terminal
 HOMEPAGE="http://www.leonerd.org.uk/code/${NAME}/"
 SRC_URI="http://www.leonerd.org.uk/code/${NAME}/${NAME}-${VERSION}.tar.gz"
 
-DEPEND="pkgconfig(unibilium)"
-BUILD_REQUIRES="pkg-config"
+BUILD_REQUIRES="pkg-config libunibilium4 libunibilium-devel"
 
 LDFLAGS="-no-undefined"
 
