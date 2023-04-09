@@ -1,6 +1,6 @@
 NAME="libtermkey"
 VERSION="0.22"
-RELEASE=1
+RELEASE=2
 LICENSE="MIT"
 
 CATEGORY="Libs"
