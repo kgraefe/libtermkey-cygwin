@@ -28,9 +28,10 @@ jobs:
         timeout-minutes: 1
       - name: Load variables from the cygport file
         run: |
-          eval "$(cygport libtermkey.cygport vars BUILD_REQUIRES PVR)"
+          eval "$(cygport libtermkey.cygport vars BUILD_REQUIRES PVR ARCH)"
           printf 'BUILD_REQUIRES=%s\n' "$BUILD_REQUIRES" >>"$GITHUB_ENV"
-          printf 'PVR=%s\n' "$PVR" >>"$GITHUB_ENV"
+          printf 'DIST_DIR=%s\n' "libtermkey-$PVR.$ARCH/dist" >>"$GITHUB_ENV"
+          printf 'DIST_ARCHIVE=%s\n' "libtermkey-dist-$PVR.$ARCH.tar.xz" >>"$GITHUB_ENV"
       - name: Install build requirements
         uses: cygwin/cygwin-install-action@v4
         with:
@@ -58,16 +59,15 @@ jobs:
       - name: Cygport package
         run: cygport libtermkey.cygport package
         timeout-minutes: 5
-      - name: Tar up build results
-        if: always()
-        run: tar -caf libtermkey-build-results.txz libtermkey-*-*.*/
-        timeout-minutes: 10
+      - name: Tar up dist directory
+        run: |
+          cd "$DIST_DIR"
+          tar -cJvaf "$DIST_ARCHIVE" */
       - name: Store build results
-        if: always()
         uses: actions/upload-artifact@v2
         with:
-          name: build-results
-          path: libtermkey-build-results.txz
+          name: ${{ env.DIST_ARCHIVE }}
+          path: ${{ env.DIST_DIR }}/${{ env.DIST_ARCHIVE }}
           if-no-files-found: error
         timeout-minutes: 5
       - name: Release
@@ -75,11 +75,6 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           fail_on_unmatched_files: true
-          files: |
-            libtermkey-${{ env.PVR }}.x86_64/dist/libtermkey/libtermkey1/libtermkey1-${{ env.PVR }}.tar.xz
-            libtermkey-${{ env.PVR }}.x86_64/dist/libtermkey/libtermkey-${{ env.PVR }}-src.tar.xz
-            libtermkey-${{ env.PVR }}.x86_64/dist/libtermkey/libtermkey-devel/libtermkey-devel-${{ env.PVR }}.tar.xz
-            libtermkey-${{ env.PVR }}.x86_64/dist/libtermkey/libtermkey-doc/libtermkey-doc-${{ env.PVR }}.tar.xz
-            libtermkey-${{ env.PVR }}.x86_64/dist/libtermkey/libtermkey-debuginfo/libtermkey-debuginfo-${{ env.PVR }}.tar.xz
+          files: ${{ env.DIST_DIR }}/${{ env.DIST_ARCHIVE }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
