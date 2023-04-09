@@ -1,6 +1,7 @@
 NAME="libtermkey"
 VERSION="0.22"
 RELEASE=1
+LICENSE="MIT"
 
 CATEGORY="Libs"
 SUMMARY="easy processing of keyboard entry from terminal-based programs"
